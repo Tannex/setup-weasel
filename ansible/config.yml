@@ -38,7 +38,15 @@
     owner: "{{ ansible_user_id }}"
     mode: '0644'
 
+- name: "Check LazyVim config"
+  become: false
+  stat:
+    path: ~/.config/nvim
+  register: lazyvim_stat
+
 - name: "LazyVim setup"
+  become: false
+  when: not lazyvim_stat.stat.exists
   block:
   - name: Clone LazyVim starter repository
     git:
@@ -47,8 +55,6 @@
       update: yes
       register: lazyvim_clone_result
       changed_when: lazyvim_clone_result.after is defined
-      args:
-        creates: ~/.config/nvim
 
   - name: Remove .git directory from LazyVim configuration
     file:
