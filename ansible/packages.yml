@@ -1,5 +1,7 @@
 ---
-- become: true
+- hosts: localhost
+  connection: local
+  become: true
 
   tasks:
   - name: "install software-properties-common"
