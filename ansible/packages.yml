@@ -21,6 +21,7 @@
     - neovim
     - git
     - lsd
+    - zig
     state: latest
 - name: "get non-root user name"
   become: false
@@ -76,16 +77,22 @@
     - name: Install Lazygit
       become: true
       command: install /tmp/lazygit -D -t /usr/local/bin/
-- name: Check if Neovim configuration directory exists
-  stat:
-    path: "~/.config/nvim/"
-  register: nvim_dir_stat
+- name: Install Linuxbrew
+  become: false
+  shell: |
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  args:
+    creates: /home/linuxbrew/.linuxbrew/bin/brew
+- name: "Install fzf"
+  become: false
+  shell: |
+    brew install fzf
+    $(brew --prefix)/opt/fzf/install
+  args:
+    creates: /home/linuxbrew/.linuxbrew/bin/fzf
 - name: "LazyVim setup"
-  when: not nvim_dir_stat.stat.exists
-  vars:
-    nvim_dir_stat: 
-      stat:
-        path: "~/.config/nvim/"
+  args:
+    creates: "~/.config/nvim/init.vim"
   block:
   - name: Clone LazyVim starter repository
     git:
