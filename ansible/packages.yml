@@ -1,14 +1,17 @@
 ---
 - name: "install software-properties-common"
+  become: true
   apt:
     update_cache: true
     name: software-properties-common
     state: latest
 - name: "setup neovim repo"
+  become: true
   apt_repository:
     repo: ppa:neovim-ppa/stable
     state: present
 - name: "install packages"
+  become: true
   apt:
     update_cache: true
     pkg:
@@ -31,7 +34,7 @@
   user:
     name: "{{ current_user }}"
     shell: /usr/bin/zsh
-- name: "check oh-my-zsh install state"
+- name: "check oh-my-zsh state"
   become: false
   stat:
     path: "{{ user_home }}/.oh-my-zsh"
