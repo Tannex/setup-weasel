@@ -3,4 +3,5 @@
   connection: local
   tasks:
   - name: packages
+    become: true
     include_tasks: ansible/packages.yml
