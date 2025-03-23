@@ -61,3 +61,12 @@
       path: ~/.config/nvim/.git
       state: absent
     when: lazyvim_clone_result.changed
+
+- name: "Ensure Homebrew path is setup"
+  become: false
+  copy:
+    dest: "~/.oh-my-zsh/custom/brew.zsh"
+    content: |
+      export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+    owner: "{{ ansible_user_id }}"
+    mode: '0644'
