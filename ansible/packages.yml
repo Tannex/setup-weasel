@@ -19,16 +19,16 @@
     - git
     - lsd
     state: latest
-- name: "change default shell"
+- name: "get non-root user name"
   become: false
   vars:
     current_user: "{{ ansible_user_id }}"
-  tasks:
-    - name: "chsh"
-      become: true
-      user:
-        name: "{{ current_user }}"
-        shell: /bin/zsh
+  register: current_user
+- name: "chsh"
+  become: true
+  user:
+    name: "{{ current_user }}"
+    shell: /bin/zsh
 - name: "check oh-my-zsh install state"
   become: false
   stat:
