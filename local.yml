@@ -1,6 +1,8 @@
 ---
 - hosts: localhost
   connection: local
+  become: true
+
   tasks:
   - name: packages
     import_tasks: ansible/packages.yml

@@ -1,19 +1,14 @@
 ---
-- hosts: localhost
-  connection: local
-  become: true
-
-  tasks:
-  - name: "install software-properties-common"
-    package:
-      name: software-properties-common
-  - name: "setup neovim repo"
-    ansible.builtin.shell: "add-apt-repository ppa:neovim-ppa/stable"
-  - name: "install packages"
-    apt: update_cache=yes
-    package:
-      name:
-      - btop
-      - tmux
-      - zsh
-      - neovim
+- name: "install software-properties-common"
+  package:
+    name: software-properties-common
+- name: "setup neovim repo"
+  ansible.builtin.shell: "add-apt-repository ppa:neovim-ppa/stable"
+- name: "install packages"
+  apt: update_cache=yes
+  package:
+    name:
+    - btop
+    - tmux
+    - zsh
+    - neovim
