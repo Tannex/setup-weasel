@@ -7,13 +7,11 @@
 
 - name: "install oh-my-zsh"
   become: false
-  when: not omz_stat.stat.exists
   shell: 'sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"'
   args:
     creates: ~/.oh-my-zsh
 
 - name: "install powerlevel10k"
-  when: not p10k_stat.stat.exists
   become: false
   shell: 'git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"'
   args:
