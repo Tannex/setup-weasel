@@ -55,3 +55,9 @@
   shell: 'curl -s "https://get.sdkman.io" | bash'
   args:
     creates: ~/.sdkman
+
+- name: "Install nvm"
+  become: false
+  shell: 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash'
+  args:
+    creates: ~/.nvm
