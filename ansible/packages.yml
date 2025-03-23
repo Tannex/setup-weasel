@@ -52,6 +52,30 @@
   when: not p10k_stat.stat.exists
   become: false
   shell: 'git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"'
+- name: Install Lazygit
+  block:
+    - name: Fetch Lazygit version
+      shell: |
+        curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": *"v\K[^"]*'
+      register: lazygit_version
+      become: false
+
+    - name: Download Lazygit tarball
+      get_url:
+        url: "https://github.com/jesseduffield/lazygit/releases/download/v{{ lazygit_version.stdout }}/lazygit_{{ lazygit_version.stdout }}_Linux_x86_64.tar.gz"
+        dest: /tmp/lazygit.tar.gz
+      become: false
+
+    - name: Extract Lazygit tarball
+      unarchive:
+        src: /tmp/lazygit.tar.gz
+        dest: /tmp/
+        remote_src: yes
+      become: false
+
+    - name: Install Lazygit
+      command: install /tmp/lazygit -D -t /usr/local/bin/
+      become: true
 - name: Clone LazyVim starter repository
   git:
     repo: https://github.com/LazyVim/starter.git
