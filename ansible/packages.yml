@@ -93,15 +93,19 @@
   args:
     creates: /home/linuxbrew/.linuxbrew/bin/fzf
 - name: "LazyVim setup"
-  args:
-    creates: "~/.config/nvim/init.vim"
   block:
   - name: Clone LazyVim starter repository
     git:
       repo: https://github.com/LazyVim/starter.git
       dest: ~/.config/nvim
       update: yes
+      register: lazyvim_clone_result
+      changed_when: lazyvim_clone_result.after is defined
+      args:
+        creates: ~/.config/nvim
+
   - name: Remove .git directory from LazyVim configuration
     file:
       path: ~/.config/nvim/.git
       state: absent
+    when: lazyvim_clone_result.changed
