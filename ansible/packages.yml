@@ -6,7 +6,7 @@
     state: latest
 - name: "setup neovim repo"
   apt_repository:
-    name: ppa:neovim-ppa/stable
+    repo: ppa:neovim-ppa/stable
     state: present
 - name: "install packages"
   apt:
