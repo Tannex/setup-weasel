@@ -22,6 +22,8 @@
     - git
     - lsd
     - zig
+    - ripgrep
+    - fd-find
     state: latest
 - name: "get non-root user name"
   become: false

@@ -5,3 +5,15 @@
     path: "~/.zshrc"
     regexp: '^ZSH_THEME=".*"$'
     line: 'ZSH_THEME="powerlevel10k/powerlevel10k"'
+- name: Ensure lsd.zsh exists with aliases
+  become: false
+  copy:
+    dest: "~/.oh-my-zsh/custom/lsd.zsh"
+    content: |
+      alias ls='lsd'
+      alias l='ls -l'
+      alias la='ls -a'
+      alias lla='ls -la'
+      alias lt='ls --tree'
+    owner: "{{ ansible_user_id }}"
+    mode: '0644'
