@@ -18,7 +18,6 @@
     - neovim
     - git
     - lsd
-    state: latest
 - name: "get non-root user name"
   become: false
   vars:
