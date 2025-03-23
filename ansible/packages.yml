@@ -21,7 +21,6 @@
     - neovim
     - git
     - lsd
-    - zig
     - ripgrep
     - fd-find
     state: latest
@@ -89,9 +88,14 @@
   become: false
   shell: |
     brew install fzf
-    $(brew --prefix)/opt/fzf/install
   args:
     creates: /home/linuxbrew/.linuxbrew/bin/fzf
+- name: "Install Zig"
+  become: false
+  shell: |
+    brew install zig
+  args:
+    creates: /home/linuxbrew/.linuxbrew/bin/zig
 - name: "LazyVim setup"
   block:
   - name: Clone LazyVim starter repository
