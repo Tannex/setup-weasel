@@ -80,7 +80,7 @@
   when: not (ansible_stat.path_exists)
   vars:
     ansible_stat:
-      path_exists: "{{ lookup('file', '~/.config/nvim/.git') }}"
+      path_exists: "{{ lookup('file', '~/.config/nvim/') }}"
   block:
   - name: Clone LazyVim starter repository
     git:
