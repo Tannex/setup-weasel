@@ -1,0 +1,5 @@
+---
+- name: "generate ssh keys"
+  become: false
+  shell: "ssh-keygen"
+  when: 
