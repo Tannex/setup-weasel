@@ -1,5 +1,9 @@
 ---
-- tasks:
+- hosts: localhost
+  connection: local
+  become: true
+
+  tasks:
   - name: "install software-properties-common"
     package:
       name: software-properties-common
@@ -13,4 +17,3 @@
       - tmux
       - zsh
       - neovim
-
