@@ -1,4 +1,9 @@
 ---
+- name: "Fetch current user id"
+  become: false
+  set_fact:
+    current_user: " {{ ansible_user_id }} "
+
 - name: "chsh"
   become: true
   user:
