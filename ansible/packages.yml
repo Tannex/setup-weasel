@@ -77,9 +77,11 @@
       become: true
       command: install /tmp/lazygit -D -t /usr/local/bin/
 - name: "LazyVim setup"
-  when: not nvim_dir_exists
+  when: not (nvim_dir_stat.stat.exists)
   vars:
-    nvim_dir_exists: "{{ lookup('file', '~/.config/nvim') }}"
+    nvim_dir_stat: 
+      stat:
+        path: "~/.config/nvim/"
   block:
   - name: Clone LazyVim starter repository
     git:
