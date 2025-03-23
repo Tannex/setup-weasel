@@ -26,9 +26,11 @@
     user_home: "{{ lookup('env','HOME') }}"
 - name: "chsh"
   become: true
+  debug:
+    msg: "{{ current_user }}"
   user:
     name: "{{ current_user }}"
-    shell: /bin/zsh
+    shell: /usr/bin/zsh
 - name: "check oh-my-zsh install state"
   become: false
   stat:
