@@ -1,10 +1,32 @@
 ---
+- name: "chsh"
+  become: true
+  user:
+    name: "{{ current_user }}"
+    shell: /usr/bin/zsh
+
+- name: "install oh-my-zsh"
+  become: false
+  when: not omz_stat.stat.exists
+  shell: 'sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"'
+  args:
+    creates: ~/.oh-my-zsh
+
+- name: "install powerlevel10k"
+  when: not p10k_stat.stat.exists
+  become: false
+  shell: 'git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"'
+  args:
+    creates: ~/.oh-my-zsh/custom/themes/powerlevel10k
+
 - name: "Update zsh theme"
   become: false
   lineinfile:
     path: "~/.zshrc"
     regexp: '^ZSH_THEME=".*"$'
     line: 'ZSH_THEME="powerlevel10k/powerlevel10k"'
+    state: present
+
 - name: Ensure lsd.zsh exists with aliases
   become: false
   copy:
@@ -17,3 +39,21 @@
       alias lt='ls --tree'
     owner: "{{ ansible_user_id }}"
     mode: '0644'
+
+- name: "LazyVim setup"
+  block:
+  - name: Clone LazyVim starter repository
+    git:
+      repo: https://github.com/LazyVim/starter.git
+      dest: ~/.config/nvim
+      update: yes
+      register: lazyvim_clone_result
+      changed_when: lazyvim_clone_result.after is defined
+      args:
+        creates: ~/.config/nvim
+
+  - name: Remove .git directory from LazyVim configuration
+    file:
+      path: ~/.config/nvim/.git
+      state: absent
+    when: lazyvim_clone_result.changed

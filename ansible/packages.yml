@@ -5,11 +5,13 @@
     update_cache: true
     name: software-properties-common
     state: latest
+
 - name: "setup neovim repo"
   become: true
   apt_repository:
     repo: ppa:neovim-ppa/stable
     state: present
+
 - name: "install packages"
   become: true
   apt:
@@ -24,40 +26,16 @@
     - ripgrep
     - fd-find
     state: latest
+
 - name: "get non-root user name"
   become: false
   set_fact:
     current_user: "{{ ansible_user_id }}"
     user_home: "{{ lookup('env','HOME') }}"
+
 - debug:
     msg: "{{ current_user }}"
-- name: "chsh"
-  become: true
-  user:
-    name: "{{ current_user }}"
-    shell: /usr/bin/zsh
-- name: "check oh-my-zsh state"
-  become: false
-  stat:
-    path: "~/.oh-my-zsh"
-  register: omz_stat
-- name: "install oh-my-zsh"
-  become: false
-  when: not omz_stat.stat.exists
-  shell: 'sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"'
-- name: "check p10k state"
-  become: false
-  stat:
-    path: "~/.oh-my-zsh/custom/themes/powerlevel10k"
-  register: p10k_stat
-- name: "install powerlevel10k"
-  when: not p10k_stat.stat.exists
-  become: false
-  shell: 'git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"'
-- name: "Check Lazygit state"
-  become: false
-  stat: path=/usr/local/bin/lazygit
-  register: lazygit_stat
+
 - name: Install Lazygit
   when: not lazygit_stat.stat.exists
   block:
@@ -83,39 +61,36 @@
     - name: Install Lazygit
       become: true
       command: install /tmp/lazygit -D -t /usr/local/bin/
+
 - name: Install Linuxbrew
   become: false
   shell: |
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
   args:
     creates: /home/linuxbrew/.linuxbrew/bin/brew
+
+- name: Add Homebrew to PATH
+  become: false
+  shell: |
+    echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+  args:
+    executable: /bin/bash
+
 - name: "Install fzf"
   become: false
   shell: |
     brew install fzf
   args:
     creates: /home/linuxbrew/.linuxbrew/bin/fzf
+  environment:
+    PATH: "/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:{{ ansible_env.PATH }}"
+
 - name: "Install Zig"
   become: false
   shell: |
     brew install zig
   args:
     creates: /home/linuxbrew/.linuxbrew/bin/zig
-- name: "LazyVim setup"
-  block:
-  - name: Clone LazyVim starter repository
-    git:
-      repo: https://github.com/LazyVim/starter.git
-      dest: ~/.config/nvim
-      update: yes
-      register: lazyvim_clone_result
-      changed_when: lazyvim_clone_result.after is defined
-      args:
-        creates: ~/.config/nvim
-
-  - name: Remove .git directory from LazyVim configuration
-    file:
-      path: ~/.config/nvim/.git
-      state: absent
-    when: lazyvim_clone_result.changed
+  environment:
+    PATH: "/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:{{ ansible_env.PATH }}"
