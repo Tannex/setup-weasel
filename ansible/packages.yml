@@ -33,17 +33,17 @@
   become: false
   stat:
     path: "{{ user_home }}/.oh-my-zsh"
-  register: omz-stat
+  register: omz_stat
 - name: "install oh-my-zsh"
   become: false
-  when: not omz-stat.stat.exists
+  when: not omz_stat.stat.exists
   shell: 'sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"'
 - name: "check p10k state"
   become: false
   stat:
     path: "~/.p10k.zsh"
-  register: p10k-stat
+  register: p10k_stat
 - name: "install powerlevel10k"
-  when: not p10k-stat.stat.exists
+  when: not p10k_stat.stat.exists
   become: false
   shell: 'git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"'
