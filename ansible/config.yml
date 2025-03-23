@@ -1,5 +1,7 @@
 ---
-- name: "generate ssh keys"
+- name: "Update zsh theme"
   become: false
-  shell: "ssh-keygen"
-  when: 
+  lineinfile:
+    path: "~/.zshrc"
+    regexp: '^ZSH_THEME=".*"$'
+    line: 'ZSH_THEME="powerlevel10k/powerlevel10k"'
