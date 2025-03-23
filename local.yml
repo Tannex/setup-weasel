@@ -7,3 +7,5 @@
     import_tasks: ansible/packages.yml
   - name: configuration
     import_tasks: ansible/config.yml
+  - name: finalize
+    import_tasks: ansible/finalize.yml

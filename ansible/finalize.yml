@@ -1,0 +1,3 @@
+---
+- debug:
+    msg: "Setup complete, you can now run `zsh` to start using your new shell"
