@@ -36,6 +36,12 @@
 - debug:
     msg: "{{ current_user }}"
 
+- name: "Check LazyGit binary"
+  become: false
+  stat:
+    path: /usr/local/bin/lazygit
+  register: lazygit_stat
+
 - name: Install Lazygit
   when: not lazygit_stat.stat.exists
   block:
