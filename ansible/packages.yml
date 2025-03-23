@@ -37,7 +37,7 @@
 - name: "check oh-my-zsh state"
   become: false
   stat:
-    path: "{{ user_home }}/.oh-my-zsh"
+    path: "~/.oh-my-zsh"
   register: omz_stat
 - name: "install oh-my-zsh"
   become: false
@@ -46,7 +46,7 @@
 - name: "check p10k state"
   become: false
   stat:
-    path: "{{ user_home }}/.oh-my-zsh/custom/themes/powerlevel10k"
+    path: "~/.oh-my-zsh/custom/themes/powerlevel10k"
   register: p10k_stat
 - name: "install powerlevel10k"
   when: not p10k_stat.stat.exists
@@ -55,33 +55,39 @@
 - name: Install Lazygit
   block:
     - name: Fetch Lazygit version
+      become: false
       shell: |
         curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": *"v\K[^"]*'
       register: lazygit_version
-      become: false
 
     - name: Download Lazygit tarball
+      become: false
       get_url:
         url: "https://github.com/jesseduffield/lazygit/releases/download/v{{ lazygit_version.stdout }}/lazygit_{{ lazygit_version.stdout }}_Linux_x86_64.tar.gz"
         dest: /tmp/lazygit.tar.gz
-      become: false
 
     - name: Extract Lazygit tarball
+      become: false
       unarchive:
         src: /tmp/lazygit.tar.gz
         dest: /tmp/
         remote_src: yes
-      become: false
 
     - name: Install Lazygit
-      command: install /tmp/lazygit -D -t /usr/local/bin/
       become: true
-- name: Clone LazyVim starter repository
-  git:
-    repo: https://github.com/LazyVim/starter.git
-    dest: ~/.config/nvim
-    update: yes
-- name: Remove .git directory from LazyVim configuration
-  file:
-    path: ~/.config/nvim/.git
-    state: absent
+      command: install /tmp/lazygit -D -t /usr/local/bin/
+- name: "LazyVim setup"
+  when: not (ansible_stat.path_exists)
+  vars:
+    ansible_stat:
+      path_exists: "{{ lookup('file', '~/.config/nvim/.git') }}"
+  block:
+  - name: Clone LazyVim starter repository
+    git:
+      repo: https://github.com/LazyVim/starter.git
+      dest: ~/.config/nvim
+      update: yes
+  - name: Remove .git directory from LazyVim configuration
+    file:
+      path: ~/.config/nvim/.git
+      state: absent
