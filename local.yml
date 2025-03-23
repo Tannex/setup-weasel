@@ -1,0 +1,5 @@
+---
+- hosts: all
+  tasks:
+  - name: packages
+    include_tasks: ansible/packages.yaml
