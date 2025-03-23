@@ -27,15 +27,6 @@
     - fd-find
     state: latest
 
-- name: "get non-root user name"
-  become: false
-  set_fact:
-    current_user: "{{ ansible_user_id }}"
-    user_home: "{{ lookup('env','HOME') }}"
-
-- debug:
-    msg: "{{ current_user }}"
-
 - name: Install Lazygit
   become: false
   homebrew:
