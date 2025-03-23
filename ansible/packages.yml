@@ -1,14 +1,19 @@
 ---
 - name: "install software-properties-common"
-  package:
+  apt:
+    update_cache: true
     name: software-properties-common
+    state: latest
 - name: "setup neovim repo"
-  ansible.builtin.shell: "add-apt-repository ppa:neovim-ppa/stable"
+  apt_repository:
+    name: ppa:neovim-ppa/stable
+    state: present
 - name: "install packages"
-  apt: update_cache=yes
-  package:
+  apt:
+    update_cache: true
     name:
     - btop
     - tmux
     - zsh
     - neovim
+    state: latest
