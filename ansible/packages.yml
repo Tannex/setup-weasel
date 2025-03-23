@@ -54,7 +54,12 @@
   when: not p10k_stat.stat.exists
   become: false
   shell: 'git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"'
+- name: "Check Lazygit state"
+  become: false
+  stat: path=/usr/local/bin/lazygit
+  register: lazygit_stat
 - name: Install Lazygit
+  when: not lazygit_stat.stat.exists
   block:
     - name: Fetch Lazygit version
       become: false
@@ -82,6 +87,7 @@
   become: false
   shell: |
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
   args:
     creates: /home/linuxbrew/.linuxbrew/bin/brew
 - name: "Install fzf"
