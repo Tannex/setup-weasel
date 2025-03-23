@@ -11,7 +11,7 @@
 - name: "install packages"
   apt:
     update_cache: true
-    name:
+    pkg:
     - btop
     - tmux
     - zsh
