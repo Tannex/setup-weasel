@@ -52,3 +52,12 @@
   when: not p10k_stat.stat.exists
   become: false
   shell: 'git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"'
+- name: Clone LazyVim starter repository
+  git:
+    repo: https://github.com/LazyVim/starter.git
+    dest: ~/.config/nvim
+    update: yes
+- name: Remove .git directory from LazyVim configuration
+  file:
+    path: ~/.config/nvim/.git
+    state: absent
