@@ -76,8 +76,12 @@
     - name: Install Lazygit
       become: true
       command: install /tmp/lazygit -D -t /usr/local/bin/
+- name: Check if Neovim configuration directory exists
+  stat:
+    path: "~/.config/nvim/"
+  register: nvim_dir_stat
 - name: "LazyVim setup"
-  when: not (nvim_dir_stat.stat.exists)
+  when: not nvim_dir_stat.stat.exists
   vars:
     nvim_dir_stat: 
       stat:
