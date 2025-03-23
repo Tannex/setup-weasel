@@ -24,6 +24,8 @@
   set_fact:
     current_user: "{{ ansible_user_id }}"
     user_home: "{{ lookup('env','HOME') }}"
+- debug:
+    msg: "{{ current_user }}"
 - name: "chsh"
   become: true
   user:
